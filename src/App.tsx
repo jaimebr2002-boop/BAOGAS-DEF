@@ -4,7 +4,7 @@
  */
 import { useState } from 'react';
 import { Instagram, Star, ChevronLeft, ChevronRight, MapPin, Clock } from 'lucide-react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 
 const reserveLink = "https://www.google.com/maps/reserve/v/dine/c/27V4s_unpXY?source=pa&opi=79508299&hl=es-ES&gei=lm6kadLjII-ikdUP6MC9iAo&sourceurl=https://www.google.com/maps/preview/place?authuser%3D0%26hl%3Des%26gl%3Des%26pb%3D!1m16!1s0xd6048b622581f9f:0x2424aee08615cec6!3m11!1m3!1d3!2d-0.3680811!3d39.4659812!2m2!1f0!2f90!3m2!1i1920!2i919!4f75!4m2!3d39.4661955!4d-0.3680774!12m4!2m3!1i360!2i120!4i8!13m57!2m2!1i203!2i100!3m2!2i4!5b1!6m6!1m2!1i86!2i86!1m2!1i408!2i240!7m33!1m3!1e1!2b0!3e3!1m3!1e2!2b1!3e2!1m3!1e2!2b0!3e3!1m3!1e8!2b0!3e3!1m3!1e10!2b0!3e3!1m3!1e10!2b1!3e2!1m3!1e10!2b0!3e4!1m3!1e9!2b1!3e2!2b1!9b0!15m8!1m7!1m2!1m1!1e2!2m2!1i195!2i195!3i20!14m2!1sTG6kaaTjMbGskdUPoMPY0AE!7e81!15m113!1m31!13m9!2b1!3b1!4b1!6i1!8b1!9b1!14b1!20b1!25b1!18m20!3b1!4b1!5b1!6b1!9b1!13b1!14b1!17b1!20b1!21b1!22b1!27m1!1b0!28b0!30b1!32b1!33m1!1b1!34b1!36e2!10m1!8e3!11m1!3e1!14m1!3b0!17b1!20m2!1e3!1e6!24b1!25b1!26b1!27b1!29b1!30m1!2b1!36b1!37b1!39m3!2m2!2i1!3i1!43b1!52b1!54m1!1b1!55b1!56m1!1b1!61m2!1m1!1e1!65m5!3m4!1m3!1m2!1i224!2i298!72m22!1m8!2b1!5b1!7b1!12m4!1b1!2b1!4m1!1e1!4b1!8m10!1m6!4m1!1e1!4m1!1e3!4m1!1e4!3sother_user_google_review_posts__and__hotel_and_vr_partner_review_posts!6m1!1e1!9b1!89b1!90m2!1m1!1e2!98m3!1b1!2b1!3b1!103b1!113b1!114m3!1b1!2m1!1b1!117b1!122m1!1b1!126b1!127b1!21m28!1m6!1m2!1i0!2i0!2m2!1i958!2i919!1m6!1m2!1i1870!2i0!2m2!1i1920!2i919!1m6!1m2!1i0!2i0!2m2!1i1920!2i20!1m6!1m2!1i0!2i899!2m2!1i1920!2i919!22m1!1e81!29m0!30m6!3b1!6m1!2b1!7m1!2b1!9b1!34m5!7b1!10b1!14b1!15m1!1b0!37i768!39sBAGOAS%2BGastro%2B%2526%2BDrinks%2B-%2BRestaurante%26q%3DBAGOAS%2BGastro%2B%2526%2BDrinks";
 
@@ -33,6 +33,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('comida'); // 'comida', 'bebida', 'galeria'
   const [reviewPage, setReviewPage] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { scrollY } = useScroll();
   const heroBgY = useTransform(scrollY, [0, 1000], [0, 300]);
@@ -72,9 +73,12 @@ export default function App() {
               <span className="truncate">Reservar Mesa</span>
             </a>
           </div>
-          <div className="lg:hidden text-white">
+          <button 
+            className="lg:hidden text-white p-2 hover:text-primary transition-colors"
+            onClick={() => setIsMenuOpen(true)}
+          >
             <span className="material-symbols-outlined">menu</span>
-          </div>
+          </button>
         </header>
 
         <main className="flex flex-col flex-1">
@@ -685,6 +689,75 @@ export default function App() {
           />
         </div>
       )}
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-[100] bg-background-dark flex flex-col p-8"
+          >
+            <div className="flex justify-between items-center mb-12">
+              <div className="flex items-center gap-4 text-white">
+                <img 
+                  src="https://res.cloudinary.com/dfbsqy5ul/image/upload/v1772400459/496538986_17846532513470522_6319577124225671169_n._qvzdrd.jpg" 
+                  alt="BAGOAS Logo" 
+                  className="h-10 w-10 rounded-full object-cover border border-white/20"
+                />
+                <h2 className="text-white text-xl font-black tracking-wider">BAGOAS</h2>
+              </div>
+              <button 
+                onClick={() => setIsMenuOpen(false)}
+                className="text-white p-2 hover:text-primary transition-colors"
+              >
+                <span className="material-symbols-outlined text-3xl">close</span>
+              </button>
+            </div>
+            
+            <nav className="flex flex-col gap-8">
+              {[
+                { name: 'Inicio', href: '#inicio' },
+                { name: 'Sobre Nosotros', href: '#sobre-nosotros' },
+                { name: 'Carta', href: '#carta' },
+                { name: 'Reseñas', href: '#resenas' },
+                { name: 'Visítanos', href: '#visitanos' }
+              ].map((link) => (
+                <a 
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="text-white text-3xl font-black hover:text-primary transition-colors uppercase tracking-tight"
+                >
+                  {link.name}
+                </a>
+              ))}
+              <a 
+                href={reserveLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsMenuOpen(false)}
+                className="mt-4 flex items-center justify-center rounded-full h-14 bg-primary text-white text-lg font-bold shadow-lg shadow-primary/20"
+              >
+                Reservar Mesa
+              </a>
+            </nav>
+
+            <div className="mt-auto flex gap-6 justify-center">
+              <a href="https://www.instagram.com/restaurantebagoas/" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-primary transition-colors">
+                <Instagram className="w-8 h-8" />
+              </a>
+              <a href="https://www.tiktok.com/@restaurante.bagoa" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-primary transition-colors">
+                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                </svg>
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
