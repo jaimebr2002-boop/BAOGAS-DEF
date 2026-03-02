@@ -165,7 +165,7 @@ export default function App() {
             </div>
 
             {/* Scroll indicator */}
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white animate-bounce">
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white animate-bounce hidden md:block">
               <span className="material-symbols-outlined text-4xl">keyboard_arrow_down</span>
             </div>
           </div>
